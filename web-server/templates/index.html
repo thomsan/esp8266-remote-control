@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        button {
+            border: 1px solid #0066cc;
+            background-color: #0099cc;
+            color: #ffffff;
+            padding: 5px 10px;
+        }
+
+        button:hover {
+            border: 1px solid #0099cc;
+            background-color: #00aacc;
+            color: #ffffff;
+            padding: 5px 10px;
+        }
+
+        button.disabled,
+        button[disabled] {
+            border: 1px solid #999999;
+            background-color: #cccccc;
+            color: #666666;
+        }
+
+        div {
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Hello Smoking World</h1>
+    <h3>GPIOs</h1>
+        <div id="gpios">
+        </div>
+        <div id="buttons">
+        </div>
+
+        <script>
+            function setGpioPin(id, value) {
+                const url = 'http://127.0.0.1:5000/gpio'
+                let data = { id: id, value: value };
+
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: JSON.stringify(data)
+                }).then(res => {
+                    console.log("Request complete! response:", res);
+                });
+            }
+
+            function onGpioButtonClick(buttonEl, id) {
+                if (buttonEl.className == "disabled") {
+                    buttonEl.className = "";
+                    console.log("enabled")
+                    setGpioPin(id, true);
+                } else {
+                    buttonEl.className = "disabled";
+                    console.log("disabled");
+                    setGpioPin(id, false);
+                }
+            }
+            function addButton(elementId, text, id, active) {
+                var buttonEl = document.createElement("button");
+                if (!active) {
+                    buttonEl.className = "disabled";
+                } else {
+                    buttonEl.className = "";
+                }
+                buttonEl.id = "button-gpio-" + id;
+                buttonEl.addEventListener('click', function () { onGpioButtonClick(buttonEl, id); }, false);
+
+                var buttonTextEl = document.createElement("span");
+                buttonTextEl.className = "button-text";
+                buttonTextEl.innerText = text;
+                buttonEl.appendChild(buttonTextEl);
+                document.getElementById(elementId).appendChild(buttonEl);
+            }
+
+            function getGPIOs() {
+                const url = 'http://127.0.0.1:5000/gpio'
+                fetch(url)
+                    .then(response => response.json())
+                    .then(json => {
+                        console.log("Received GPIO status: " + json);
+                        console.log(json)
+                        for (i = 0; i < json.length; i++) {
+                            addButton("buttons", "GPIO" + i, i, json[i])
+                        }
+                    })
+            }
+            getGPIOs()
+        </script>
+</body>
+
+</html>
