@@ -1,4 +1,5 @@
 requirements:
+	sudo apt-get install libatlas-base-dev
 	pip install -r requirements.txt
 
 run: export FLASK_DEBUG=1
