@@ -1,4 +1,6 @@
 # ESP8266 remote control
+[![BCH compliance](https://bettercodehub.com/edge/badge/thomsan/esp8266-remote-control?branch=master)](https://bettercodehub.com/)
+
 Remote control for ESP8266 using Python.
 
 # Overview
